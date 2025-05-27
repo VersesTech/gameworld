@@ -21,7 +21,7 @@ class Bounce(BaseBounce):
         self.perturb = None if perturb in (None, "None") else perturb
         self.perturb_step = perturb_step
         self.num_steps = 0
-        super().__init__(simple=simple, player_x=player_x, opponent_x=opponent_x, **kwargs)
+        super().__init__(player_x=player_x, opponent_x=opponent_x, **kwargs)
     
 
     def step(self, action):

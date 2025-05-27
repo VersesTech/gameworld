@@ -20,7 +20,7 @@ class Aviate(BaseAviate):
         self.perturb_step = perturb_step
         self.num_steps = 0
 
-        super().__init__(simple=simple, **kwargs)
+        super().__init__(**kwargs)
        
     def step(self, action):
         obs, reward, done, trunc, info = super().step(action)
