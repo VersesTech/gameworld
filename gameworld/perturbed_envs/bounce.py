@@ -10,7 +10,6 @@ class Bounce(BaseBounce):
 
     def __init__(
         self,
-        simple=True,
         player_x=135,
         opponent_x=15,
         perturb=None,

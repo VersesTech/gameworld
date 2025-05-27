@@ -8,7 +8,7 @@ from gameworld.envs.cross import Cross as BaseCross
 class Cross(BaseCross):
     """Freeway (‘Cross’) with exact baseline when perturb=None, and mid-episode color/shape perturbations."""
 
-    def __init__(self, simple=True, perturb=None, perturb_step=5000, **kwargs):
+    def __init__(self, perturb=None, perturb_step=5000, **kwargs):
         assert perturb in (None, "None", "color", "shape"), \
             "perturb must be None, 'color', or 'shape'"
         # normalize perturb flag

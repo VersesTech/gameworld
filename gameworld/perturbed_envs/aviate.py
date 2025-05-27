@@ -10,7 +10,6 @@ class Aviate(BaseAviate):
 
     def __init__(
         self,
-        simple=True,
         perturb=None,
         perturb_step=5000,
         **kwargs,
