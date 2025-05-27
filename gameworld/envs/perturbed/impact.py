@@ -1,7 +1,7 @@
 import numpy as np
 from PIL import Image, ImageDraw
 
-from gameworld.envs.impact import Impact as BaseImpact
+from gameworld.envs.base.impact import Impact as BaseImpact
 
 
 class Impact(BaseImpact):

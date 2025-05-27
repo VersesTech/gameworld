@@ -2,7 +2,7 @@ import numpy as np
 from gymnasium import spaces
 from PIL import Image, ImageDraw
 
-from gameworld.envs.aviate import Aviate as BaseAviate
+from gameworld.envs.base.aviate import Aviate as BaseAviate
 
 
 class Aviate(BaseAviate):

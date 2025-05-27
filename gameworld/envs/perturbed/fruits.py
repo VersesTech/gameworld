@@ -1,7 +1,7 @@
 import numpy as np
 from PIL import Image, ImageDraw
 
-from gameworld.envs.fruits import Fruits as BaseFruits
+from gameworld.envs.base.fruits import Fruits as BaseFruits
 
 
 class Fruits(BaseFruits):

@@ -1,7 +1,7 @@
 import numpy as np
 from PIL import Image, ImageDraw
 
-from gameworld.envs.jump import Jump as BaseJump
+from gameworld.envs.base.jump import Jump as BaseJump
 
 
 class Jump(BaseJump):

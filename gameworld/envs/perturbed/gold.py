@@ -1,7 +1,7 @@
 import numpy as np
 from PIL import Image, ImageDraw
 
-from gameworld.envs.gold import Gold as BaseGold
+from gameworld.envs.base.gold import Gold as BaseGold
 
 
 class Gold(BaseGold):
