@@ -5,7 +5,7 @@ from gameworld.envs.base.jump import Jump as BaseJump
 
 
 class Jump(BaseJump):
-    """Runner‐jump with exact baseline when perturb=None, and mid‐episode color/shape perturbations."""
+    """Jump with exact baseline when perturb=None, and mid‐episode color/shape perturbations."""
 
     def __init__(self, perturb=None, perturb_step=5000, **kwargs):
         assert perturb in (

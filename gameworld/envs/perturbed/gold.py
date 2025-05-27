@@ -5,7 +5,7 @@ from gameworld.envs.base.gold import Gold as BaseGold
 
 
 class Gold(BaseGold):
-    """Coin collector with exact baseline when perturb=None, and mid-episode color/shape perturbations."""
+    """Gold with exact baseline when perturb=None, and mid-episode color/shape perturbations."""
 
     def __init__(self, max_coins=3, max_obstacles=3, perturb=None, perturb_step=5000, **kwargs):
         assert perturb in (None, "None", "color", "shape"), \

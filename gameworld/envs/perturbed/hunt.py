@@ -5,7 +5,7 @@ from gameworld.envs.base.hunt import Hunt as BaseHunt
 
 
 class Hunt(BaseHunt):
-    """Asterix‐style ‘Hunt’ with exact baseline when perturb=None, and mid‐episode color/shape perturbations."""
+    """Hunt with exact baseline when perturb=None, and mid‐episode color/shape perturbations."""
 
     def __init__(self, max_objects=3, perturb=None, perturb_step=5000, **kwargs):
         assert perturb in (None, "None", "color", "shape"), \

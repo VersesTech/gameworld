@@ -5,7 +5,7 @@ from gameworld.envs.base.impact import Impact as BaseImpact
 
 
 class Impact(BaseImpact):
-    """Breakout‐style ‘Impact’ with exact baseline when perturb=None, and mid-episode color/shape perturbations."""
+    """Impact with exact baseline when perturb=None, and mid-episode color/shape perturbations."""
 
     def __init__(self, paddle_y=190, perturb=None, perturb_step=5000, **kwargs):
         assert perturb in (None, "None", "color", "shape"), \

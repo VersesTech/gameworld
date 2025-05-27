@@ -5,7 +5,7 @@ from gameworld.envs.base.fruits import Fruits as BaseFruits
 
 
 class Fruits(BaseFruits):
-    """Catch-the-fruit with exact baseline when perturb=None, and mid-episode color/shape perturbations."""
+    """Fruits with exact baseline when perturb=None, and mid-episode color/shape perturbations."""
 
     def __init__(self, perturb=None, perturb_step=5000, **kwargs):
         assert perturb in (None, "None", "color", "shape"), \

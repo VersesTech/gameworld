@@ -5,7 +5,7 @@ from gameworld.envs.base.explode import Explode as BaseExplode
 
 
 class Explode(BaseExplode):
-    """Kaboom–style ‘Explode’ with exact baseline when perturb=None, and mid‐episode color/shape perturbations."""
+    """ Explode with exact baseline when perturb=None, and mid‐episode color/shape perturbations."""
 
     def __init__(self, player_y=170, bomber_y=20, perturb=None, perturb_step=5000, **kwargs):
         assert perturb in (None, "None", "color", "shape"), \
