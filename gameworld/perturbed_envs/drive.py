@@ -1,172 +1,113 @@
 import numpy as np
-from gymnasium import spaces
 from PIL import Image, ImageDraw
+from gameworld.envs.drive import Drive as BaseDriveEnv
 
-from gameworld.envs.base import GameworldEnv
 
+class Drive(BaseDriveEnv):
+    """Drive with mid‐episode color or shape perturbations."""
 
-class Drive(GameworldEnv):
-    """ Player needs to drive a car on a highway and avoid other cars.
-    """
-
-    def __init__(
-        self,
-        perturb=None,
-        perturb_step=5000,
-        **kwargs,
-    ):
-        super().__init__()
-        assert perturb in (None, "None", "color", "shape"), (
-            "perturb must be None, 'color', or 'shape'"
-        )
+    def __init__(self, perturb=None, perturb_step=5000, **kwargs):
+        assert perturb in (
+            None,
+            "None",
+            "color",
+            "shape",
+        ), "perturb must be None, 'color', or 'shape'"
+        # normalize
         self.perturb = None if perturb in (None, "None") else perturb
         self.perturb_step = perturb_step
-        self.num_steps = 0  # global step counter, persists across resets
+        # track steps
+        self.num_steps = 0
 
-        # screen dims and road
-        self.width = 160
-        self.height = 210
-        self.road_width = 100
-        self.lane_count = 4
-        self.max_cars_per_lane = 4
-        self.car_width = 14
-        self.car_height = 24
-        self.spawn_probability = 0.05
+        # call base and then stash the “original” palette
+        super().__init__(**kwargs)
+        self._orig_bg_color = (150, 150, 255)
+        self._orig_road_color = (50, 50, 100)
+        self._orig_player_color = (255, 255, 0)
+        # for opponents we’ll just recolor them all to one solid color on perturb
+        self._orig_opponent_color = None  # not used by base draw
 
-        # precompute lane x positions
-        center = self.width//2
-        half_road = self.road_width//2
-        lane_w = self.road_width/self.lane_count
-        self.lane_positions = [
-            int(center - half_road + (i+0.5)*lane_w - self.car_width/2)
-            for i in range(self.lane_count)
-        ]
-
-        # player initial
-        self.player_x = center - self.car_width//2
-        self.player_y = self.height - 30
-
-        # opponents
-        self.opponents = []  # list of dict {x,y,speed,color,lane}
-        # static palette for opponents
-        self.colors = [
-            (255,0,0), (0,255,0), (0,0,255), (255,0,255)
-        ]
-
-        # default colors
-        self.bg_color = (150,150,255)
-        self.road_color = (50,50,100)
-        self.player_color = (255,255,0)
-        self.obstacle_color = (255,0,0)
-
-        # spaces
-        self.action_space = spaces.Discrete(3)
-        self.observation_space = spaces.Box(
-            low=0, high=255, shape=(self.height, self.width, 3), dtype=np.uint8
-        )
-
-        # initialize
-        self.reset()
-
-    def reset(self):
-        # reposition player and clear opponents
-        self.player_x = self.width//2 - self.car_width//2
-        self.player_y = self.height - 30
-        self.opponents = []
-        # note: self.num_steps NOT reset here
-        return self._get_obs(), {}
+        # set current palette to original
+        self.bg_color = self._orig_bg_color
+        self.road_color = self._orig_road_color
+        self.player_color = self._orig_player_color
+        self.opponent_color = (255, 0, 0)
 
     def step(self, action):
-        # lateral control
-        left_bound = self.width//2 - self.road_width//2
-        right_bound = left_bound + self.road_width - self.car_width
-        if action == 1 and self.player_x > left_bound:
-            self.player_x -= 2
-        elif action == 2 and self.player_x < right_bound:
-            self.player_x += 2
-
-        # spawn logic
-        reward, done = 0, False
-        lane_counts = {i:0 for i in range(self.lane_count)}
-        for opp in self.opponents:
-            lane_counts[opp['lane']] += 1
-        if np.random.rand() < self.spawn_probability and len(self.opponents)<3:
-            lane = np.random.randint(self.lane_count)
-            if lane_counts[lane] < self.max_cars_per_lane:
-                x = self.lane_positions[lane]
-                y = -self.car_height
-                speed = np.random.randint(1,3) if lane>=2 else np.random.randint(3,5)
-                color = self.colors[np.random.randint(len(self.colors))]
-                # avoid overlap
-                same = [o for o in self.opponents if o['lane']==lane]
-                if all(abs(y-o['y'])>self.car_height for o in same):
-                    self.opponents.append({'x':x,'y':y,'speed':speed,'color':color,'lane':lane})
-
-        # move opponents and adjust speeds
-        for i,opp in enumerate(self.opponents):
-            same_lane = [o for j,o in enumerate(self.opponents) if j!=i and o['lane']==opp['lane']]
-            for other in same_lane:
-                if 0 < other['y']-(opp['y']+self.car_height) < opp['speed']+5:
-                    opp['speed'] = other['speed']
-            opp['y'] += opp['speed']
-        # cull off-screen
-        self.opponents = [o for o in self.opponents if o['y']<=self.height]
-
-        # collision check
-        for opp in self.opponents:
-            if (self.player_x < opp['x']+self.car_width and
-                self.player_x+self.car_width > opp['x'] and
-                self.player_y < opp['y']+self.car_height and
-                self.player_y+self.car_height > opp['y']):
-                reward, done = -1, True
-                # disappear
-                self.player_y = self.height+1
-                opp['y'] = self.height+1
-                break
-
-        # perturbation timing
+        obs, reward, done, trunc, info = super().step(action)
         self.num_steps += 1
-        if self.perturb and self.num_steps==self.perturb_step:
+        if self.perturb and self.num_steps == self.perturb_step:
             self._apply_perturbation()
-
-        return self._get_obs(), reward, done, False, {}
+        return obs, reward, done, trunc, info
 
     def _apply_perturbation(self):
-        print(f"Applying perturbation: {self.perturb}")
-        if self.perturb=='color':
-            # swap to high contrast
-            self.bg_color = (32,32,32)
-            self.road_color = (100,100,100)
-            self.player_color = (0,128,255)
-            self.obstacle_color = (255,200,0)
-        elif self.perturb=='shape':
-            # shape: player as triangle, opponents as circles
-            self.scale = 1.2
-            self.player_w_tri = self.car_width*self.scale
-            self.player_h_tri = self.car_height*self.scale
-            # opponents same size circles
+        if self.perturb == "color":
+            # choose a completely new colour scheme
+            self.bg_color = (32, 32, 32)  # darker “sky”
+            self.road_color = (100, 100, 100)  # grey road
+            self.player_color = (0, 255, 128)  # mint‐green player car
+            self.opponent_color = (255, 200, 0)  # golden opponent cars
+        # if shape perturb, we do nothing here—shape logic lives in _get_obs()
 
     def _get_obs(self):
-        # canvas
-        img = Image.new('RGB',(self.width,self.height),self.bg_color)
-        draw = ImageDraw.Draw(img)
-        # road
-        left = self.width//2 - self.road_width//2
-        right = left + self.road_width
-        draw.rectangle([left,0,right,self.height],fill=self.road_color)
-        # player
-        px,py = self.player_x,self.player_y
-        if self.perturb=='shape' and self.num_steps>=self.perturb_step:
-            # triangle pointing up
-            pts = [(px,py+self.car_height),(px+self.car_width/2,py),(px+self.car_width,py+self.car_height)]
-            draw.polygon(pts,fill=self.player_color)
-        else:
-            draw.rectangle([px,py,px+self.car_width,py+self.car_height],fill=self.player_color)
-        # opponents
-        for opp in self.opponents:
-            ox,oy = opp['x'],opp['y']
-            if self.perturb=='shape' and self.num_steps>=self.perturb_step:
-                draw.ellipse([ox,oy,ox+self.car_width,oy+self.car_height],fill=opp['color'])
-            else:
-                draw.rectangle([ox,oy,ox+self.car_width,oy+self.car_height],fill=opp['color'])
-        return np.array(img)
+        # shape‐only override
+        if self.perturb == "shape" and self.num_steps >= self.perturb_step:
+            # blank canvas & fill sky
+            obs = np.zeros((self.height, self.width, 3), dtype=np.uint8)
+            obs[:, :, :] = np.array(self.bg_color, dtype=np.uint8)
+            # draw road
+            road_left = self.width // 2 - self.road_width // 2
+            road_right = self.width // 2 + self.road_width // 2
+            obs[:, road_left:road_right, :] = np.array(self.road_color, dtype=np.uint8)
+
+            img = Image.fromarray(obs)
+            draw = ImageDraw.Draw(img)
+
+            # draw each opponent car as a circle
+            for opp in self.opponents:
+                x, y = int(opp["x"]), int(opp["y"])
+                r = max(self.car_width, self.car_height) // 2
+                cx, cy = x + self.car_width // 2, y + self.car_height // 2
+                bbox = [cx - r, cy - r, cx + r, cy + r]
+                draw.ellipse(bbox, fill=tuple(opp["color"]))
+
+            # draw the player car as a triangle
+            px, py = int(self.player_x), int(self.player_y)
+            p_w, p_h = self.car_width, self.car_height
+            # triangle points: top-center, bottom-left, bottom-right
+            p0 = (px + p_w / 2, py)
+            p1 = (px, py + p_h)
+            p2 = (px + p_w, py + p_h)
+            draw.polygon([p0, p1, p2], fill=self.player_color)
+
+            return np.array(img)
+
+        # color‐only override
+        if self.perturb == "color" and self.num_steps >= self.perturb_step:
+            # blank canvas & fill sky
+            obs = np.zeros((self.height, self.width, 3), dtype=np.uint8)
+            obs[:, :, :] = np.array(self.bg_color, dtype=np.uint8)
+            # draw road
+            road_left = self.width // 2 - self.road_width // 2
+            road_right = self.width // 2 + self.road_width // 2
+            obs[:, road_left:road_right, :] = np.array(self.road_color, dtype=np.uint8)
+
+            # draw opponent cars as rectangles in the new opponent_color
+            for opp in self.opponents:
+                x, y = int(opp["x"]), int(opp["y"])
+                if 0 <= y < self.height:
+                    obs[y : y + self.car_height, x : x + self.car_width] = np.array(
+                        self.opponent_color, dtype=np.uint8
+                    )
+
+            # draw the player car as a rectangle in the new player_color
+            if 0 <= self.player_y < self.height:
+                obs[
+                    self.player_y : self.player_y + self.car_height,
+                    int(self.player_x) : int(self.player_x) + self.car_width,
+                ] = np.array(self.player_color, dtype=np.uint8)
+
+            return obs
+
+        # otherwise default rendering
+        return super()._get_obs()
