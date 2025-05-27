@@ -1,7 +1,6 @@
 import importlib
 from gymnasium.envs.registration import register
 
-# ① list all of your game names once
 GAME_NAMES = [
     "Aviate",
     "Bounce",
@@ -39,9 +38,9 @@ def create_gameworld_env(game, *, perturb=None, perturb_step=5000, **kwargs):
     return PertCls(perturb=perturb, perturb_step=perturb_step, **kwargs)
 
 
-# ② register every GameWorld-<Game>-v0 to our factory,
-#    passing `game=<Game>` by default.  Any user‐supplied
-#    kwargs (like perturb="color") will override these.
+# register every GameWorld-<Game>-v0 to factory,
+# passing `game=<Game>` by default.  Any user‐supplied
+# kwargs (like perturb="color") will override these.
 for game in GAME_NAMES:
     register(
         id=f"GameWorld-{game}-v0",
