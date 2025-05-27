@@ -1,13 +1,13 @@
-from gameworld.perturbed_envs.aviate import Aviate
-from gameworld.perturbed_envs.bounce import Bounce
-from gameworld.perturbed_envs.cross import Cross
-from gameworld.perturbed_envs.drive import Drive
-from gameworld.perturbed_envs.explode import Explode
-from gameworld.perturbed_envs.fruits import Fruits
-from gameworld.perturbed_envs.gold import Gold
-from gameworld.perturbed_envs.hunt import Hunt
-from gameworld.perturbed_envs.impact import Impact
-from gameworld.perturbed_envs.jump import Jump
+from gameworld.envs.perturbed.aviate import Aviate
+from gameworld.envs.perturbed.bounce import Bounce
+from gameworld.envs.perturbed.cross import Cross
+from gameworld.envs.perturbed.drive import Drive
+from gameworld.envs.perturbed.explode import Explode
+from gameworld.envs.perturbed.fruits import Fruits
+from gameworld.envs.perturbed.gold import Gold
+from gameworld.envs.perturbed.hunt import Hunt
+from gameworld.envs.perturbed.impact import Impact
+from gameworld.envs.perturbed.jump import Jump
 
 
 def create_gameworld_env(game, **kwargs):

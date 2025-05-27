@@ -1,15 +1,17 @@
 import numpy as np
 from gymnasium import spaces
-from gameworld.envs.base import GameworldEnv
+from gameworld.envs.base.base_env import GameworldEnv
 
 
-class Gold(GameworldEnv):
-    """ Basic coin collector game.
+class Hunt(GameworldEnv):
+    """ Based on the Atari Asterix game.
     
-        Player moves left, right, up, or down to collect coins and avoid obstacles.
+        Player needs to catch rewards and avoid obstacles.
+        The player can move left, right, up, or down.
+        The game is played in a 2D grid with a fixed number of lanes.
     """
 
-    def __init__(self, max_coins=3, max_obstacles=3, **kwargs):
+    def __init__(self, max_objects=3, **kwargs):
         super().__init__()
 
         self.width = 160
@@ -29,8 +31,8 @@ class Gold(GameworldEnv):
         self.player_y = self.top_margin + self.player_lane * self.lane_height
         self.items = []
         self.obstacles = []
-        self.max_coins = max_coins
-        self.max_obstacles = max_obstacles
+        self.max_items = max_objects
+        self.max_obstacles = max_objects
 
         self.action_space = spaces.Discrete(
             5
@@ -41,7 +43,6 @@ class Gold(GameworldEnv):
 
     def reset(self):
         self.player_x = self.width // 2 - self.player_width // 2
-        self.player_y = self.height // 2 - self.player_height // 2
         self.items = []
         self.obstacles = []
         return self._get_obs(), {}
@@ -75,21 +76,25 @@ class Gold(GameworldEnv):
                 self.player_y + self.player_speed, self.height - self.bottom_margin
             )
 
+        for item in self.items:
+            item[0] += item[2]  # Move left or right
+
         for obstacle in self.obstacles:
             obstacle[0] += obstacle[2]  # Move left or right
 
-        if len(self.items) < self.max_coins and np.random.rand() < 0.05:
+        if len(self.items) < self.max_items and np.random.rand() < 0.05:
+            left = np.random.choice([0, 1])
             lane = np.random.choice(range(self.lane_count))
             if self._is_empty(lane):
                 self.items.append(
                     [
-                        np.random.randint(10, self.width - 10),
+                        0 if left else self.width,
                         self.top_margin
                         + lane * self.lane_height
                         + self.lane_height // 4,
-                        0,
+                        2 if left else -2,
                     ]
-                )
+                )  # Moves left or right  # (x, y, speed)
 
         if len(self.obstacles) < self.max_obstacles and np.random.rand() < 0.05:
             left = np.random.choice([0, 1])
@@ -101,7 +106,7 @@ class Gold(GameworldEnv):
                         self.top_margin
                         + lane * self.lane_height
                         + self.lane_height // 4,
-                        3 if left else -3,
+                        2 if left else -2,
                     ]
                 )  # Moves left or right  # (x, y, speed)
 
@@ -117,7 +122,7 @@ class Gold(GameworldEnv):
                 <= item[0]
                 <= self.player_x + self.player_width
             ):
-                reward = 1
+                reward += 1
                 self.items.remove(item)
             elif item[0] < 0 or item[0] > self.width:
                 self.items.remove(item)
@@ -131,8 +136,7 @@ class Gold(GameworldEnv):
                 <= obstacle[0]
                 <= self.player_x + self.player_width
             ):
-                reward = -1
-                done = True
+                reward -= 1
                 self.obstacles.remove(obstacle)
             elif obstacle[0] < 0 or obstacle[0] > self.width:
                 self.obstacles.remove(obstacle)
@@ -150,6 +154,10 @@ class Gold(GameworldEnv):
         obs[:, :, 1] = 50
         obs[:, :, 2] = 100
 
+        for i in range(self.lane_count + 1):
+            y = self.top_margin + i * self.lane_height - 1
+            obs[y : y + 3, :, :] = [255, 255, 255]  # White lane dividers
+
         obs[
             self.player_y : self.player_y + self.lane_height,
             self.player_x : self.player_x + self.player_width,
@@ -165,7 +173,7 @@ class Gold(GameworldEnv):
                 0,
                 255,
                 0,
-            ]  # Green rewards
+            ]  # Green item
 
         for obstacle in self.obstacles:
             obs[

@@ -3,8 +3,8 @@ import numpy as np
 from gymnasium import spaces
 
 from PIL import Image
-from gameworld.envs.base import GameworldEnv
-from gameworld.envs.utils import parse_image, make_ball
+from gameworld.envs.base.base_env import GameworldEnv
+from gameworld.envs.base.utils import parse_image, make_ball
 
 
 

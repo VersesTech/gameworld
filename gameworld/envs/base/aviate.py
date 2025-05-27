@@ -1,6 +1,6 @@
 import numpy as np
 from gymnasium import spaces
-from gameworld.envs.base import GameworldEnv
+from gameworld.envs.base.base_env import GameworldEnv
 
 
 class Aviate(GameworldEnv):
@@ -82,7 +82,7 @@ class Aviate(GameworldEnv):
 
         return self._get_obs(), reward, done, False, {}
 
-    def __get_obs(self):
+    def _get_obs(self):
         obs = np.zeros((self.height, self.width, 3), dtype=np.uint8)
         obs[:, :, 0] = 50  # Background color (dark blue)
         obs[:, :, 1] = 50

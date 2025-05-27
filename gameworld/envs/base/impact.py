@@ -1,6 +1,6 @@
 import numpy as np
 from gymnasium import spaces
-from gameworld.envs.base import GameworldEnv
+from gameworld.envs.base.base_env import GameworldEnv
 
 
 class Impact(GameworldEnv):
