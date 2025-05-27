@@ -39,10 +39,10 @@ class Bounce(BaseBounce):
             self.ball_color = (0, 255, 255)
         # shape-only: handled in _get_simple_obs drawing
 
-    def _get_simple_obs(self):
+    def _get_obs(self):
         # before shape-perturbation, delegate to base for pixel-perfect match
         if not (self.perturb == "shape" and self.num_steps >= self.perturb_step):
-            return super()._get_simple_obs()
+            return super()._get_obs()
 
         # custom shape: triangle paddles + circle ball
         # start from uniform background + walls
@@ -68,9 +68,3 @@ class Bounce(BaseBounce):
         bx1, by1 = bx0 + self.ball_size, by0 + self.ball_size
         draw.ellipse([bx0, by0, bx1, by1], fill=self.ball_color)
         return np.array(img)
-
-    def _get_complex_obs(self):
-        try:
-            return super()._get_complex_obs()
-        except AttributeError:
-            return self._get_simple_obs()

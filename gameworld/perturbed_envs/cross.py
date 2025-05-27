@@ -43,7 +43,7 @@ class Cross(BaseCross):
             self.perturb_car_color = (255,200,  0)
         # shape-only: no color state changes (handled in drawing)
 
-    def _get_simple_obs(self):
+    def _get_obs(self):
         # before shape-perturbation, and for default/color-only, delegate to either base or our color-aware draw
         if not (self.perturb == "shape" and self.num_steps >= self.perturb_step):
             # if color-perturbed, we need to re-draw with our new palette
@@ -54,11 +54,6 @@ class Cross(BaseCross):
         # shape-perturb: switch to custom shapes
         return self._draw_obs(shape_only=True)
 
-    def _get_complex_obs(self):
-        try:
-            return super()._get_complex_obs()
-        except AttributeError:
-            return self._get_simple_obs()
 
     def _draw_obs(self, *, color_only=False, shape_only=False):
         # start with flat background + lane dividers

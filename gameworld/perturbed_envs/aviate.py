@@ -37,10 +37,10 @@ class Aviate(BaseAviate):
             self.pipe_color_lower = (0, 255, 255)
         # shape-only: handled in custom drawing
 
-    def _get_simple_obs(self):
+    def _get_obs(self):
         # before shape-perturbation, delegate to base for pixel-perfect match
         if not (self.perturb == "shape" and self.num_steps >= self.perturb_step):
-            return super()._get_simple_obs()
+            return super()._get_obs()
 
         # custom shape: bird circle + triangular pipes
         obs = np.zeros((self.height, self.width, 3), dtype=np.uint8)
@@ -72,9 +72,3 @@ class Aviate(BaseAviate):
             ]
             draw.polygon(pts_l, fill=self.pipe_color_lower)
         return np.array(img)
-
-    def _get_complex_obs(self):
-        try:
-            return super()._get_complex_obs()
-        except AttributeError:
-            return self._get_simple_obs()
