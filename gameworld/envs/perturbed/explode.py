@@ -1,7 +1,7 @@
 import numpy as np
 from PIL import Image, ImageDraw
 
-from gameworld.envs.explode import Explode as BaseExplode
+from gameworld.envs.base.explode import Explode as BaseExplode
 
 
 class Explode(BaseExplode):

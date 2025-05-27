@@ -1,6 +1,6 @@
 import numpy as np
 from PIL import Image, ImageDraw
-from gameworld.envs.drive import Drive as BaseDriveEnv
+from gameworld.envs.base.drive import Drive as BaseDriveEnv
 
 
 class Drive(BaseDriveEnv):

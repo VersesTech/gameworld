@@ -2,7 +2,7 @@ import numpy as np
 from gymnasium import spaces
 from PIL import Image, ImageDraw
 
-from gameworld.envs.cross import Cross as BaseCross
+from gameworld.envs.base.cross import Cross as BaseCross
 
 
 class Cross(BaseCross):

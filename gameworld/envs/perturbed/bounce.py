@@ -2,7 +2,7 @@ import numpy as np
 from gymnasium import spaces
 from PIL import Image, ImageDraw
 
-from gameworld.envs.bounce import Bounce as BaseBounce
+from gameworld.envs.base.bounce import Bounce as BaseBounce
 
 
 class Bounce(BaseBounce):

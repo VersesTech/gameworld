@@ -1,7 +1,7 @@
 import numpy as np
 from PIL import Image, ImageDraw
 
-from gameworld.envs.hunt import Hunt as BaseHunt
+from gameworld.envs.base.hunt import Hunt as BaseHunt
 
 
 class Hunt(BaseHunt):
