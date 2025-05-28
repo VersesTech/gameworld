@@ -6,7 +6,7 @@ from gameworld.envs.base.aviate import Aviate as BaseAviate
 
 
 class Aviate(BaseAviate):
-    """Flappy Bird with exact baseline when perturb=None, and mid-episode color/shape perturbations."""
+    """Aviate with exact baseline when perturb=None, and mid-episode color/shape perturbations."""
 
     def __init__(
         self,

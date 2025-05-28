@@ -6,7 +6,7 @@ from gameworld.envs.base.bounce import Bounce as BaseBounce
 
 
 class Bounce(BaseBounce):
-    """Pong with exact baseline when perturb=None, and mid-episode color/shape perturbations."""
+    """Bounce with exact baseline when perturb=None, and mid-episode color/shape perturbations."""
 
     def __init__(
         self,
