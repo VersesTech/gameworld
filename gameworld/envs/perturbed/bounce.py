@@ -37,7 +37,7 @@ class Bounce(BaseBounce):
             self.player_color = (0, 128, 255)
             self.opponent_color = (255, 200, 0)
             self.ball_color = (0, 255, 255)
-        # shape-only: handled in _get_simple_obs drawing
+        # shape-only: handled in _get_obs drawing
 
     def _get_obs(self):
         # before shape-perturbation, delegate to base for pixel-perfect match
