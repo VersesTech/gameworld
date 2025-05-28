@@ -20,7 +20,7 @@ def test_reset_equivalence_gym_make(env_name):
     # --------------------------------------------------
     np.random.seed(12345)
     # env       = create_env(env_name)
-    env_id = f"GameWorld-{env_name}-v0"
+    env_id = f"Gameworld-{env_name}-v0"
     env = gymnasium.make(env_id)
 
     obs1, info1 = env.reset()
@@ -70,7 +70,7 @@ def test_step_equivalence_gym_make(env_name):
     # a) seed & reset "plain" env
     np.random.seed(54321)
     # env   = create_env(env_name)
-    env_id = f"GameWorld-{env_name}-v0"
+    env_id = f"Gameworld-{env_name}-v0"
     env = gymnasium.make(env_id)
     obs1, info1 = env.reset()
 
