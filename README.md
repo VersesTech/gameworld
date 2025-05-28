@@ -4,8 +4,7 @@ We introduce a set of environments using the `gymnasium.Gym` api.
 
 |Aviate |Bounce |Cross |Drive |Explode |Fruits |Gold |Hunt |Impact |Jump |
 | -- |  -- |  -- |  -- |  -- |  -- |  -- |  -- |  -- |  -- | 
-|<img src=.github/videos/Aviate.gif width=100/> |<img src=.github/videos/Bounce.gif width=100/> |<img src=.github/videos/Cross.gif width=100/> |<img src=.github/videos/Drive.gif width=100/> |<img src=.github/videos/Explode.gif width=100/> |<img src=.github/videos/Fruits.gif width=100/> |<img src=.github/videos/Gold.gif width=100/> |<img src=.github/videos/Hunt.gif width=100/> |<img src=.github/videos/Impact.gif width=100/> |<img src=.github/videos/Jump.gif width=100/> |
-
+|<img src=.github/videos/Aviate.gif width=50/> |<img src=.github/videos/Bounce.gif width=50/> |<img src=.github/videos/Cross.gif width=50/> |<img src=.github/videos/Drive.gif width=50/> |<img src=.github/videos/Explode.gif width=50/> |<img src=.github/videos/Fruits.gif width=50/> |<img src=.github/videos/Gold.gif width=50/> |<img src=.github/videos/Hunt.gif width=50/> |<img src=.github/videos/Impact.gif width=50/> |<img src=.github/videos/Jump.gif width=50/> |
 ## Installation
 
 The  
