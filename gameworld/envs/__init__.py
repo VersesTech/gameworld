@@ -43,7 +43,7 @@ def create_gameworld_env(game, *, perturb=None, perturb_step=5000, **kwargs):
 # kwargs (like perturb="color") will override these.
 for game in GAME_NAMES:
     register(
-        id=f"GameWorld-{game}-v0",
+        id=f"Gameworld-{game}-v0",
         entry_point="gameworld.envs:create_gameworld_env",
         kwargs={"game": game},
     )
