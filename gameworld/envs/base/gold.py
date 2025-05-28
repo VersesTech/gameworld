@@ -4,9 +4,9 @@ from gameworld.envs.base.base_env import GameworldEnv
 
 
 class Gold(GameworldEnv):
-    """ Basic coin collector game.
-    
-        Player moves left, right, up, or down to collect coins and avoid obstacles.
+    """Basic coin collector game.
+
+    Player moves left, right, up, or down to collect coins and avoid obstacles.
     """
 
     def __init__(self, max_coins=3, max_obstacles=3, **kwargs):
@@ -171,10 +171,6 @@ class Gold(GameworldEnv):
             obs[
                 obstacle[1] : obstacle[1] + self.item_size,
                 obstacle[0] : obstacle[0] + self.item_size,
-            ] = [
-                255,
-                0,
-                0,
-            ]  # Red obstacle
+            ] = [255, 0, 0]
 
         return obs
