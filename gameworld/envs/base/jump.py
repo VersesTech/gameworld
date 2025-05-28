@@ -4,8 +4,7 @@ from gameworld.envs.base.base_env import GameworldEnv
 
 
 class Jump(GameworldEnv):
-    """ Player needs to jump or dodge incoming obstacles.
-    """
+    """Player needs to jump or dodge incoming obstacles."""
 
     def __init__(self, **kwargs):
         super().__init__()
@@ -22,6 +21,8 @@ class Jump(GameworldEnv):
 
         self.runner_vel_y = 0
         self.is_jumping = False
+
+        self.top_margin = 20
 
         self.obstacles = []
         self.obstacle_spawn_prob = 0.05
@@ -107,7 +108,7 @@ class Jump(GameworldEnv):
         ]
 
         # Celing
-        obs[0:20, :] = [150, 150, 255]
+        obs[0 : self.top_margin, :] = [150, 150, 255]
 
         # runner
         obs[

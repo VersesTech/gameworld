@@ -4,9 +4,9 @@ from gameworld.envs.base.base_env import GameworldEnv
 
 
 class Aviate(GameworldEnv):
-    """ Based on the FlappyBird game
-    
-        Player needs to flap the birds wings to navigate through the pipes.
+    """Based on the FlappyBird game
+
+    Player needs to flap the birds wings to navigate through the pipes.
     """
 
     def __init__(self, **kwargs):
@@ -26,6 +26,11 @@ class Aviate(GameworldEnv):
         self.pipe_width = 20
         self.pipe_speed = 2
         self.pipe_spawn_prob = 0.03
+
+        self.bg_color = (50, 50, 100)
+        self.bird_color = (255, 255, 0)
+        self.pipe_color_lower = (0, 255, 30)
+        self.pipe_color_upper = (30, 255, 0)
 
         self.pipes = []
 
@@ -84,9 +89,7 @@ class Aviate(GameworldEnv):
 
     def _get_obs(self):
         obs = np.zeros((self.height, self.width, 3), dtype=np.uint8)
-        obs[:, :, 0] = 50  # Background color (dark blue)
-        obs[:, :, 1] = 50
-        obs[:, :, 2] = 100
+        obs[:, :, :] = self.bg_color
 
         # Bird
         if self.bird_y > -self.bird_radius and self.bird_y < self.height:
@@ -94,16 +97,14 @@ class Aviate(GameworldEnv):
             y1 = min(self.height, int(self.bird_y + self.bird_radius))
             x0 = max(0, self.bird_x - self.bird_radius)
             x1 = min(self.width, self.bird_x + self.bird_radius)
-            obs[y0:y1, x0:x1] = [255, 255, 0]
+            obs[y0:y1, x0:x1] = self.bird_color
 
         for pipe in self.pipes:
             x0 = max(0, pipe["x"])
             x1 = pipe["x"] + self.pipe_width
-            obs[0 : pipe["gap_y"], x0:x1] = [30, 255, 0]  # Upper pipe
-            obs[pipe["gap_y"] + self.pipe_gap : self.height, x0:x1] = [
-                0,
-                255,
-                30,
-            ]  # Lower pipe
+            obs[0 : pipe["gap_y"], x0:x1] = self.pipe_color_upper
+            obs[pipe["gap_y"] + self.pipe_gap : self.height, x0:x1] = (
+                self.pipe_color_lower
+            )
 
         return obs

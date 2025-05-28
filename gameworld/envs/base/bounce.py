@@ -8,12 +8,19 @@ def sign(x):
 
 
 class Bounce(GameworldEnv):
-    """ Based on the Atari Pong game.
-    
-        Player moves a paddle up and down to bounce the ball back to the enemy.
+    """Based on the Atari Pong game.
+
+    Player moves a paddle up and down to bounce the ball back to the enemy.
     """
+
     def __init__(self, player_x=135, opponent_x=15, **kwargs):
         super().__init__()
+
+        self.bg_color = (50, 50, 100)
+        self.player_color = (255, 255, 0)
+        self.opponent_color = (0, 255, 0)
+        self.ball_color = (255, 0, 0)
+        self.wall_color = [150, 150, 255]
 
         self.width = 160
         self.height = 210
@@ -108,7 +115,9 @@ class Bounce(GameworldEnv):
             action_impact = (
                 3
                 if opponent_action == 1
-                else -3 if opponent_action == 2 else sign(self.ball_dy) * 6
+                else -3
+                if opponent_action == 2
+                else sign(self.ball_dy) * 6
             )
 
             self.ball_dy = base_speed + action_impact
@@ -134,34 +143,21 @@ class Bounce(GameworldEnv):
 
     def _get_obs(self):
         obs = np.zeros((self.height, self.width, 3), dtype=np.uint8)
-        obs[:, :, 0] = 50  # Background color (dark blue)
-        obs[:, :, 1] = 50
-        obs[:, :, 2] = 100
+        obs[:, :, :] = self.bg_color
         obs[
             self.player_y : self.player_y + self.paddle_height,
             self.player_x : self.player_x + self.paddle_width,
-        ] = [
-            255,
-            255,
-            0,
-        ]  # Yellow paddle
+        ] = self.player_color
         obs[
             self.opponent_y : self.opponent_y + self.paddle_height,
             self.opponent_x : self.opponent_x + self.paddle_width,
-        ] = [
-            0,
-            255,
-            0,
-        ]  # Green paddle
+        ] = self.opponent_color
         if self.ball_x > 0:
             obs[
                 self.ball_y : self.ball_y + self.ball_size,
                 self.ball_x : self.ball_x + self.ball_size,
-            ] = [
-                255,
-                0,
-                0,
-            ]  # Red ball
-        obs[: self.wall_width, :, :] = [150, 150, 255]  # Top wall (light blue)
-        obs[-self.wall_width :, :, :] = [150, 150, 255]  # Bottom wall (light blue)
+            ] = self.ball_color
+
+        obs[: self.wall_width, :, :] = self.wall_color
+        obs[-self.wall_width :, :, :] = self.wall_color
         return obs
