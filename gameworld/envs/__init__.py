@@ -38,7 +38,7 @@ def create_gameworld_env(game, *, perturb=None, perturb_step=5000, **kwargs):
     return PertCls(perturb=perturb, perturb_step=perturb_step, **kwargs)
 
 
-# register every GameWorld-<Game>-v0 to factory,
+# register every Gameworld-<Game>-v0 to factory,
 # passing `game=<Game>` by default.  Any user‐supplied
 # kwargs (like perturb="color") will override these.
 for game in GAME_NAMES:

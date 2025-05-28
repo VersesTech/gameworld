@@ -21,7 +21,7 @@ GAME_NAMES = [
 
 @pytest.mark.parametrize("game", GAME_NAMES)
 def test_gym_make_and_basic_api(game):
-    env_id = f"GameWorld-{game}-v0"
+    env_id = f"Gameworld-{game}-v0"
 
     # should register without error
     env = gymnasium.make(env_id)
