@@ -20,9 +20,11 @@ This library has been developed and tested on`python3.11` on both Linux and macO
 The Gameworld environments use the gymnasium.Gym api. To run your own algorithm against our environments, create an environment instance as:
 
 ```python
-from gameworld.envs import create_gameworld_env
+import gameworld.envs # Triggers registering the environments in Gymnasium
+import gymnasium
 
-env = create_gameworld_env(game="Explode")
+game = "Aviate"
+env = gymnasium.make(f"Gameworld-{game}-v0")
 
 obs, info = env.reset()
 
